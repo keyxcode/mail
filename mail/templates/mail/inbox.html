@@ -4,6 +4,7 @@
 {% block body %}
     <h2>{{ request.user.email }}</h2>
 
+    <!-- Mailbox selection buttons -->
     <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
     <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
     <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
@@ -11,9 +12,22 @@
     <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
     <hr>
 
-    <div id="emails-view">
+    <!-- Dynamic mailbox -->
+    <div id="emails-view"></div>
+    <div id="mailbox">
+        <table class="table table-hover">
+            <thead>
+                <tr class="row">
+                    <th class="col-5" scope="col">From</th>
+                    <th class="col-5" scope="col">Subject</th>
+                    <th class="col-2" scope="col">Date</th>
+                </tr>
+            </thead>
+            <tbody id="mails"></tbody>
+        </table>
     </div>
 
+    <!-- Compose view -->
     <div id="compose-view">
         <h3>New Email</h3>
         <form id="compose-form">
