@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <h2 id="user">{{ request.user.email }}</h2>
 
     <!-- Mailbox selection buttons -->
     <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
@@ -12,19 +12,52 @@
     <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
     <hr>
 
+    <!-- Feedback message -->
+    <div class="alert alert-primary" id="feedback">
+        
+    </div>
+
     <!-- Dynamic mailbox -->
-    <div id="emails-view"></div>
-    <div id="mailbox">
-        <table class="table table-hover">
-            <thead>
-                <tr class="row">
-                    <th class="col-5" scope="col">From</th>
-                    <th class="col-5" scope="col">Subject</th>
-                    <th class="col-2" scope="col">Date</th>
-                </tr>
-            </thead>
-            <tbody id="mails"></tbody>
-        </table>
+    <div id="emails-view">
+        <h3 id="mailbox-name"></h3>
+        <div id="mailbox">
+            <table class="table table-hover">
+                <thead id="mails-header">
+                    <tr>
+                        <th class="border-0" scope="col">Sender</th>
+                        <th class="border-0" scope="col">Subject</th>
+                        <th class="border-0" scope="col">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="mails">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Read E-mail -->
+    <div id="mail-view">
+        <!-- Header -->
+        <div>
+            <span class="font-weight-bold">From: </span>
+            <span id="mail-from"></span>
+        </div> 
+        <div>
+            <span class="font-weight-bold">To: </span>
+            <span id="mail-to"></span>
+        </div> 
+        <div>
+            <span class="font-weight-bold">Subject: </span>
+            <span id="mail-subject"></span>
+        </div> 
+        <div>
+            <span class="font-weight-bold">Date: </span>
+            <span id="mail-date"></span>
+        </div> 
+        <div class="my-3" id="mail-buttons"></div>
+        <hr>
+        <!-- Body -->
+        <p id="mail-body"></p>
     </div>
 
     <!-- Compose view -->
@@ -40,7 +73,7 @@
             <div class="form-group">
                 <input class="form-control" id="compose-subject" placeholder="Subject">
             </div>
-            <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
+            <textarea class="form-control mb-3" id="compose-body" placeholder="Body"></textarea>
             <input type="submit" class="btn btn-primary"/>
         </form>
     </div>
