@@ -247,5 +247,5 @@ function reply(original_sender, subject, date, body) {
   document.querySelector('#compose-recipients').value = original_sender;
   document.querySelector('#compose-recipients').disabled = true;
   document.querySelector('#compose-subject').value = (subject.startsWith('Re')) ? subject : `Re: ${subject}`;
-  document.querySelector('#compose-body').value = `\n>> On ${date} ${original_sender} wrote:\n ${body}`;
+  document.querySelector('#compose-body').value = `\n\n>> On ${date} ${original_sender} wrote:\n ${body}`;
 }
