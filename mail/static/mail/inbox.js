@@ -40,10 +40,12 @@ function compose_email() {
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-recipients').disabled = false;
   document.querySelector('#compose-subject').value = '';
   document.querySelector('#compose-body').value = '';
 }
 
+//=============================================================================
 function send_mail() {
 
   // POST the email to the server
@@ -67,13 +69,25 @@ function send_mail() {
   });
 }
 
+//=============================================================================
 function load_mailbox(mailbox) {
+
+  // Show the mailbox and hide other views
+  emailsView.style.display = 'block';
+  mailView.style.display = 'none';
+  composeView.style.display = 'none';
 
   // Clear feedback
   feedback.style.display = 'none';
 
   // Clear previous mails view
   document.querySelector('#mails').innerHTML = '';
+
+  // Show the mailbox name
+  document.querySelector('#mailbox-name').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
+
+  // Change the first col header (To for Sent box, From for others)
+  document.querySelector('#from-to').innerHTML = (mailbox === 'sent') ? 'To' : 'From';
 
   // GET emails
   fetch(`/emails/${mailbox}`)
@@ -96,26 +110,42 @@ function load_mailbox(mailbox) {
       // Grab email info
       let id = email['id'];
       let sender = email['sender'];
+      let recipients = email['recipients'];
       let subject = email['subject'];
+      let body = email['body'];
       let date = email['timestamp'];
       let isRead = email['read'];
 
-      // Create the e-mail srow (highlighted if read)
+      // Create a clickable e-mail srow (highlighted if read)
       let tr = document.createElement('tr');
       tr.addEventListener('click', function() {
         load_mail(id);
       })
+      tr.classList.add('d-flex')
       if (isRead) {
         tr.classList.add('table-active');
       }
 
       // Create key info td for each row
-      [sender, subject, date].forEach(info => {
+      key_infos = (mailbox === 'sent') ? [recipients, subject, date] : [sender, subject, date]
+      key_infos.forEach(info => {
         // Create each column data
         let td = document.createElement('td');
-        td.classList.add('col-4');
         td.innerHTML = info;
         
+        // Different treatment for each td
+        if (info === subject) {
+          td.innerHTML += `- <span class="text-muted">${body}</span>`;
+          td.classList.add('col-6');
+        }
+        if (info === date) {
+          td.classList.add('font-italic', 'text-muted');
+          td.classList.add('col-3');
+        }
+        if (info === recipients || info === sender) {
+          td.classList.add('col-3');
+        }
+
         // Add to row
         tr.appendChild(td);
       });
@@ -124,22 +154,16 @@ function load_mailbox(mailbox) {
       document.querySelector('#mails').appendChild(tr);
     }
   })
-  
-  // Show the mailbox and hide other views
-  emailsView.style.display = 'block';
-  mailView.style.display = 'none';
-  composeView.style.display = 'none';
-
-  // Show the mailbox name
-  document.querySelector('#mailbox-name').innerHTML = `${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}`;
 }
 
+//=============================================================================
 function update_feedback(message, alert_class) {
   feedback.style.display = 'block';
   feedback.innerHTML = message;
   feedback.classList.add(alert_class);
 }
 
+//=============================================================================
 function load_mail(id) {
 
   // Show the mail and hide other views
@@ -183,18 +207,19 @@ function load_mail(id) {
     let mailButtons = document.querySelector('#mail-buttons');
     mailButtons.innerHTML = '';
 
-    // Add reply button
-    let reply_button = document.createElement('button');
-    reply_button.classList.add('btn', 'btn-outline-primary');
-    reply_button.innerHTML = 'Reply';
-    reply_button.addEventListener('click', () => {
-      console.log('yo');
-    })
-    mailButtons.appendChild(reply_button)
-
     // If this is not in the Sent mailbox, add archive button
     let user = document.querySelector('#user').innerText;
     if (sender != user) {
+
+      // Add reply button
+      let reply_button = document.createElement('button');
+      reply_button.classList.add('btn', 'btn-outline-primary');
+      reply_button.innerHTML = 'Reply';
+      reply_button.addEventListener('click', () => {
+        reply(sender, subject, date, body);
+      })
+      mailButtons.appendChild(reply_button)
+
       // Add archive button
       let archive_button = document.createElement('button');
       archive_button.classList.add('btn', 'btn-outline-secondary', 'ml-3');
@@ -210,7 +235,17 @@ function load_mail(id) {
       })
       mailButtons.appendChild(archive_button)      
     }
-
-
   } )
+}
+
+//=============================================================================
+function reply(original_sender, subject, date, body) {
+  
+  compose_email();
+
+  // Pre-fill info
+  document.querySelector('#compose-recipients').value = original_sender;
+  document.querySelector('#compose-recipients').disabled = true;
+  document.querySelector('#compose-subject').value = (subject.startsWith('Re')) ? subject : `Re: ${subject}`;
+  document.querySelector('#compose-body').value = `\n>> On ${date} ${original_sender} wrote:\n ${body}`;
 }

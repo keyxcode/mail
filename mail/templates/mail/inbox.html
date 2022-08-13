@@ -17,16 +17,17 @@
         
     </div>
 
-    <!-- Dynamic mailbox -->
+    <!-- E-MAILS VIEW -->
     <div id="emails-view">
         <h3 id="mailbox-name"></h3>
+        <hr>
         <div id="mailbox">
             <table class="table table-hover">
                 <thead id="mails-header">
-                    <tr>
-                        <th class="border-0" scope="col">Sender</th>
-                        <th class="border-0" scope="col">Subject</th>
-                        <th class="border-0" scope="col">Date</th>
+                    <tr class="d-flex">
+                        <th class="border-0 col-3" id="from-to">From</th>
+                        <th class="border-0 col-6">Subject</th>
+                        <th class="border-0 col-3">Date</th>
                     </tr>
                 </thead>
                 <tbody id="mails">
@@ -35,32 +36,39 @@
         </div>
     </div>
 
-    <!-- Read E-mail -->
+    <!-- READ MAIL VIEW -->
     <div id="mail-view">
+        <!-- Subject -->
+        <h3 class="font-weight-normal" id="mail-subject"></h3>
+        <hr>
         <!-- Header -->
-        <div>
-            <span class="font-weight-bold">From: </span>
-            <span id="mail-from"></span>
-        </div> 
-        <div>
-            <span class="font-weight-bold">To: </span>
-            <span id="mail-to"></span>
-        </div> 
-        <div>
-            <span class="font-weight-bold">Subject: </span>
-            <span id="mail-subject"></span>
-        </div> 
-        <div>
-            <span class="font-weight-bold">Date: </span>
-            <span id="mail-date"></span>
-        </div> 
-        <div class="my-3" id="mail-buttons"></div>
+        <div class="row">
+            <!-- From/ to -->
+            <div class="col-9">
+                <div>
+                    <span >From: </span>
+                    <span class="font-weight-bold" id="mail-from"></span>
+                </div> 
+                <div>
+                    <span>To: </span>
+                    <span class="font-weight-bold" id="mail-to"></span>
+                </div> 
+            </div>
+            <!-- Date -->
+            <div class="col-3">
+                <div>
+                    <span class="font-italic" id="mail-date"></span>
+                </div> 
+            </div>
+        </div>
         <hr>
         <!-- Body -->
         <p id="mail-body"></p>
+        <!-- Mail buttons -->
+        <div class="my-2" id="mail-buttons"></div>
     </div>
 
-    <!-- Compose view -->
+    <!-- COMPOSE VIEW -->
     <div id="compose-view">
         <h3>New Email</h3>
         <form id="compose-form">
@@ -73,8 +81,8 @@
             <div class="form-group">
                 <input class="form-control" id="compose-subject" placeholder="Subject">
             </div>
-            <textarea class="form-control mb-3" id="compose-body" placeholder="Body"></textarea>
-            <input type="submit" class="btn btn-primary"/>
+            <textarea autofocus class="form-control mb-3" id="compose-body" placeholder="Body"></textarea>
+            <input type="submit" class="btn btn-primary" value="Send"/>
         </form>
     </div>
 {% endblock %}
